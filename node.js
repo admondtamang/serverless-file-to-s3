@@ -3,6 +3,7 @@ const multer = require("multer");
 const express = require("express");
 
 const app = express();
+require("dotenv").config();
 const storage = multer.memoryStorage();
 const upload = multer({ dest: "uploads/", storage }); // Destination folder for temporary file storage
 
