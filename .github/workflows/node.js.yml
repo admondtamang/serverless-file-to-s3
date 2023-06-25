@@ -1,0 +1,33 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Manager CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        version: 16.x
+    - run: npm install
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+          key: ${{ secrets.SSH_KEY }}
+          name: talentPoint.pem # optional
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          config: ${{ secrets.CONFIG }} # ssh_config; optional
+          if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
+    - name: rsync over ssh
+      run: rsync -avP node.js package.json package-lock.json ubuntu@3.7.231.166:/data/manager
+    - name: updating new manager api version
+      run: ssh ubuntu@3.7.231.166 bash /data/deploy.sh
