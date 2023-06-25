@@ -16,29 +16,35 @@ AWS.config.update({
 // Define the S3 bucket name
 const bucketName = process.env.BUCKET;
 
-app.post("/upload", upload.single("file"), (req, res) => {
-  const file = req.file;
+// Handle the file upload route
+app.post("/upload", upload.array("files", 10), (req, res) => {
+  const files = req.files;
 
-  if (!file) {
-    return res.status(400).json({ message: "No file provided" });
+  if (!files || files.length === 0) {
+    return res.status(400).json({ message: "No files provided" });
   }
 
   const s3 = new AWS.S3();
-  const params = {
-    Bucket: bucketName,
-    Key: file.originalname,
-    Body: file.buffer,
-  };
+  const uploadPromises = [];
 
-  s3.upload(params, (err, data) => {
-    if (err) {
-      console.error("Error uploading file:", err);
-      return res.status(500).json({ message: "Failed to upload file" });
-    }
+  for (const file of files) {
+    const params = {
+      Bucket: bucketName,
+      Key: file.originalname,
+      Body: file.buffer,
+    };
 
-    console.log("File uploaded successfully:", data.Location);
-    return res.status(200).json({ message: "File uploaded successfully" });
-  });
+    uploadPromises.push(s3.upload(params).promise());
+  }
+
+  Promise.all(uploadPromises)
+    .then(() => {
+      return res.status(200).json({ message: "Files uploaded successfully" });
+    })
+    .catch((err) => {
+      console.error("Error uploading files:", err);
+      return res.status(500).json({ message: "Failed to upload files" });
+    });
 });
 
 app.listen(3000, () => {
