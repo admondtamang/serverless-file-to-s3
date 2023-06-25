@@ -28,6 +28,6 @@ jobs:
           config: ${{ secrets.CONFIG }} # ssh_config; optional
           if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
     - name: rsync over ssh
-      run: rsync -avP node.js package.json package-lock.json SERVER_IP:/data/manager
+      run: rsync -avP node.js package.json package-lock.json SERVER:/data/manager
     - name: updating new manager api version
-      run: ssh SERVER_IP bash /data/deploy.sh
+      run: ssh SERVER bash /data/deploy.sh
