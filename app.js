@@ -39,10 +39,10 @@ app.post("/upload", upload.array("files", 10), (req, res) => {
   }
 
   Promise.all(uploadPromises)
-    .then((res) => {
+    .then((data) => {
       return res
         .status(200)
-        .json({ path: res, message: "Files uploaded successfully" });
+        .json({ path: data, message: "Files uploaded successfully" });
     })
     .catch((err) => {
       console.error("Error uploading files:", err);
