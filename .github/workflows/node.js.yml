@@ -23,6 +23,8 @@ jobs:
       uses: shimataro/ssh-key-action@v2
       with:
           key: ${{ secrets.SSH_KEY }}
+          name: talentPoint.pem # optional
+          config: ${{ secrets.CONFIG }} # ssh_config; optional
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
           if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
     - name: rsync over ssh
