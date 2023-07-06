@@ -28,6 +28,6 @@ jobs:
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
           if_key_exists: replace # replace / ignore / fail; optional (defaults to fail)
     - name: rsync over ssh
-      run: rsync -avP node.js package.json package-lock.json server:/data/manager
+      run: rsync -avP src prisma package.json package-lock.json server:/data/manager
     - name: updating new manager api version
       run: ssh server bash /data/deploy.sh
