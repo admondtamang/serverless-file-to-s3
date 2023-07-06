@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+enum ApprovalStatus {
+  pending
+  approved
+  rejected
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  fullName        String?
+  password        String
+  business        Business?      @relation(fields: [businessId], references: [id])
+  businessId      String?
+  phone           String?
+  role            Role           @relation(fields: [roleId], references: [id])
+  roleId          String
+  isEmailVerified Boolean        @default(false)
+  approvalStatus  ApprovalStatus @default(pending)
+  ndaAccepted     Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model Business {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo '-----------------------------------------------------------------------'
+echo '-- 🏗️👷 Building your project before pushing  --'
+echo '-----------------------------------------------------------------------'
+
+# If everything passes... Now we can commit
+echo '----------------------------------------------------------------------'
+echo '🤔🤔🤔🤔... Code looks good... Trying to build now. 🤔🤔🤔🤔'
+echo '----------------------------------------------------------------------'
+
+yarn build ||
+    (
+        echo '❌👷🔨❌ Your build failed ❌👷🔨❌
+                         Next build failed: View the errors above to see why.'
+        echo 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+        false
+    )
