@@ -1,25 +1,74 @@
 {
-  "name": "serverless",
+  "name": "axp-portal-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "node.js",
+  "main": "index.js",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
-    "start": "sls offline start",
-    "dev": "nodemon node.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && yarn copy-hbs",
+    "start": "tsc && node dist/src/index.js && yarn copy-hbs",
+    "dev": "tsc-watch --onSuccess \"node dist/src/index.js\" | pino-pretty && yarn copy-hbs",
+    "prepare": "husky install",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "lint:fix": "eslint src --fix && yarn format",
+    "check-types": "tsc --pretty --noEmit",
+    "check-format": "prettier --check .",
+    "check-lint": "yarn lint-staged",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed",
+    "copy-hbs": "copyfiles -u 1 src/**/*.hbs dist/src"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "aws-sdk": "^2.1404.0",
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1",
-    "serverless-http": "^3.2.0",
-    "serverless-offline": "^12.0.4"
-  },
+  "repository": "git@github.com:webpoint-solutions-llc/axp-portal-backend.git",
+  "license": "MIT",
   "devDependencies": {
+    "@commitlint/cli": "^17.6.6",
+    "@commitlint/config-conventional": "^17.6.6",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cors": "^2.8.13",
+    "@types/express": "^4.17.17",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^20.3.1",
+    "@types/nodemailer": "^6.4.8",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "concurrently": "^8.2.0",
+    "copyfiles": "^2.4.1",
+    "eslint": "^8.43.0",
+    "husky": "^8.0.3",
+    "pino-pretty": "^10.0.0",
+    "prettier": "^2.8.8",
+    "prisma": "^4.16.1",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.362.0",
+    "@aws-sdk/client-ses": "^3.362.0",
+    "@aws-sdk/s3-request-presigner": "^3.363.0",
+    "@prisma/client": "^4.16.1",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "nodemon": "^2.0.22"
+    "express": "^4.18.2",
+    "handlebars": "^4.7.7",
+    "http-status": "^1.6.2",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.3",
+    "pino-http": "^8.3.3",
+    "ts-node": "^10.9.1",
+    "zod": "^3.21.4"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --max-warnings=0",
+      "prettier -w"
+    ],
+    "src/**/*.{json,css,scss,md}": [
+      "prettier -w"
+    ]
   }
 }
